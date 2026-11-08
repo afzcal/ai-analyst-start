@@ -60,7 +60,7 @@ There is no framework and no Python program controlling the model. The agent is 
 
 ## What you will build
 
-This repo ships the analyst's middle: the Profile and Analyse skills and the helpers behind them. Three skills are still to be written before `/analyst` can run end to end: Frame, Validate and Deliver, each in its own folder under `.claude/skills/`. Until Profile has been run on each table, `knowledge/beam/` holds only the known quirks and the corrections file. A finished version of everything lives in [the reference repo](https://github.com/Future-Proof-DS/ai-analyst), for comparison once the three skills are written.
+All six skills are written, including Frame, Validate and Deliver, so `/analyst` runs end to end. Each table has a profile note in `knowledge/beam/`, and the price question's run is in `outputs/2026-11-06_price-increase-retention/`. A finished version of everything lives in [the reference repo](https://github.com/Future-Proof-DS/ai-analyst), for comparison.
 
 Before touching any data, the analyst reads `knowledge/beam/`, which holds the known quirks of Beam's tables and any corrections it has been given.
 

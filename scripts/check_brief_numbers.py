@@ -45,8 +45,9 @@ def printed_values(script: Path) -> set[float]:
 
 
 def matches(value: float, pool: set[float], decimals: int) -> bool:
-    # A brief may round a table value, so compare at the brief's own precision.
-    return any(round(v, decimals) == value for v in pool)
+    # A brief may round a table value, so compare at the brief's own precision. Compare
+    # magnitudes too, since a brief states direction in words ("a drop of 2.3 points").
+    return any(round(abs(v), decimals) == abs(value) for v in pool)
 
 
 def main(run: Path) -> None:
@@ -64,7 +65,7 @@ def main(run: Path) -> None:
         for token in numbers_in(line):
             decimals = len(token.split(".")[1]) if "." in token else 0
             value = to_float(token)
-            if matches(value, tables, decimals) or matches(abs(value), tables, decimals):
+            if matches(value, tables, decimals):
                 key = "result tables"
             elif matches(value, printed, decimals):
                 key = "analysis.py output only"

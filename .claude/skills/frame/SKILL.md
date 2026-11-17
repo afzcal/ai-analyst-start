@@ -46,6 +46,7 @@ Your job is to pin the question to the decision it informs and the person who ma
    - **Decision:** <what will be done differently depending on the answer>
    - **Audience:** <who makes the decision>
    - **What would change the decision:** <the result that would push it one way, and the result that would push it the other>
+   - **Not in scope:** <what the data cannot answer for this decision, or "none identified">
 
    ## Tables likely involved
 
@@ -56,6 +57,7 @@ Your job is to pin the question to the decision it informs and the person who ma
    - **Question:** the user's words, unchanged.
    - **Decision** and **Audience:** from what the user said, in their wording. Never your own.
    - **What would change the decision:** if the user said it, use it. Otherwise write it from the decision and mark it "(inferred)". Never add a threshold the user did not give.
+   - **Not in scope:** what the decision needs but the data cannot show, judged from the question and the table notes. For example, every trial lasts 14 days, so the data cannot show how another length would do. Name only limits the data sets, never a choice to do less work. If there are none, write "none identified".
    - **Tables likely involved:** only tables that exist in `data/`, named without `.csv`, because `/analyst` looks for `knowledge/beam/<table>.md` by that name. List a table only if the question needs it.
 5. No em dashes anywhere in the note.
 

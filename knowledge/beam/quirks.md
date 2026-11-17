@@ -14,3 +14,4 @@ Things we know about our own tables. Check this list before reading a number as 
 
 - **One row per user.** `user_id` is unique in both `trials` and `subscriptions`, so each user has at most one trial and one subscription row.
 - **Payments start in 2025.** `payments.payment_date` begins on 2025-01-01, though subscriptions go back to 2022, so payment history before 2025 is not in the export.
+- **Activity windows fill late.** In `user_activity_metrics`, the first days of January 2024 have weekly and monthly windows that are not full yet, so daily actives read as a high share of monthly actives. Start any comparison after January 2024.

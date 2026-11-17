@@ -96,10 +96,15 @@ def line(
             name, xy=(x[-1], ys[-1]), xytext=(5, 0), textcoords="offset points",
             va="center", color=color, fontweight="bold" if name in focus else None,
         )
-    if dates is not None:
+    # Quarterly ticks over a year or more; shorter spans get a few ticks with compact labels.
+    if dates is not None and (max(dates) - min(dates)).days > 365:
         ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[1, 4, 7, 10]))
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%b\n%Y"))
         ax.xaxis.set_minor_locator(mdates.MonthLocator())
+    elif dates is not None:
+        locator = mdates.AutoDateLocator(maxticks=8)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
     _style(ax, title, ylabel, source)
     fig.tight_layout()
     return fig

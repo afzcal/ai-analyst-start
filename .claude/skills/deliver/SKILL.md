@@ -50,9 +50,9 @@ The reader may stop after this part, so it has to carry the answer by itself.
 ## Act 4: Write the analysis and the checks
 Give each chart or table its own section, in the order of the takeaways it supports:
 
-1. **A heading that states the takeaway** in a full sentence, with its number, such as "Annual plans churn at half the monthly rate." A label such as "Churn by plan" is not a heading.
+1. **A heading that states the takeaway** in a full sentence, with its number, such as "Annual plans churn at half the monthly rate." A label such as "Churn by plan" is not a heading. Round the number the way the chart or table below shows it, so the heading and the chart agree.
 2. **The chart or table.** Embed a chart with `![<short description>](charts/<name>.png)`. A table is copied from `data/<name>.csv` as a Markdown table of at most ten rows.
-3. **A caption below it,** in the form - **{Table, Figure} #**: a brief description of what it shows (the measure, the period, the segments, and the filters) e.g. Churn Rate Segmentation, Monthly Churn Rate by Subscription Type. On a new line below the caption, give its source: `Source: data/<name>.csv, from analysis.py`.
+3. **A caption below it,** in the form - **{Table, Figure} #**: a short label of what it shows, e.g. Churn Rate Segmentation, Monthly Churn Rate by Subscription Type. Periods left out and filters go in the Checks section, not the caption. On a new line below the caption, give its source: `Source: data/<name>.csv, from analysis.py`.
 
 Then the Checks section:
 - **Review:** the verdict, and the path of `review.md`.
@@ -79,7 +79,7 @@ Write `brief.md` in the run folder. If a brief from an earlier round is there, r
 ### <a full sentence stating the takeaway>
 ![<short description>](charts/<name>.png)
 
-**<Figure or Table> <n>:** <what it shows: the measure, the period, the segments, and the filters>  
+**<Figure or Table> <n>:** <a short label of what it shows>  
 Source: `data/<name>.csv`, from `analysis.py`.
 
 ## Checks

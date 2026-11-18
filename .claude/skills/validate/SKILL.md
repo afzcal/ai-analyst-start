@@ -2,7 +2,7 @@
 name: validate
 description: "Reviews an analysis of Beam's data the way a peer reviewer would: [i] mechanics first (joins that duplicate rows, grain, denominators, date boundaries, filters), then [ii] reasoning (whether it answers the right question, what the frame leaves out, whether the \"so what\" holds up). Writes review.md with one verdict (Ship it, Think on it or Fix first) and at most three findings. Use this skill *after* the analysis has run and *before* the brief is written. This skill can also be run on its own on any script, notebook or run folder someone wants checked. It reports what to fix, but does not change the work it reviews."
 user-invocable: true
-allowed-tools: Read Bash Write Edit AskUserQuestion
+allowed-tools: Read Bash Write Edit AskUserQuestion mcp__course-db__list_tables mcp__course-db__execute_sql
 argument-hint: "[path to a run folder, script or notebook]"
 ---
 
@@ -23,7 +23,7 @@ Your job is to read the work as a peer would, someone who did not write it and d
 - Not a redo. You test the analysis that was done, you recompute only what a check needs, and you do not answer the question again a different way.
 - Not a style review. Names, layout, and chart colors are not findings unless they change a number or how it is read.
 - Not a list of everything. At most three findings, the ones that most change the answer. 
-- Not a window into raw rows. Any checks print aggregates only and you never modify anything in `data/`.
+- Not a window into raw rows. Every query returns aggregates, any checks print aggregates only, and you never write to the database or modify anything in the repo's `data/` folder.
 
 ## Act 1: Find the work (the gate)
 1. Use the argument if given: a run folder, a script or a notebook. Otherwise use the newest folder under `outputs/` that holds an `analysis.py`.
@@ -35,21 +35,23 @@ If the user cannot say, review the mechanics only and list the reasoning under "
 
 ## Act 2: Load the context
 1. Read `knowledge/beam/quirks.md`, `knowledge/beam/corrections.md`, and the YAML file in `knowledge/beam/` for each table the work reads.
-2. Read the script or notebook in full, and the result tables it wrote.
-3. Rerun the script from the repo root with `poetry run python <path>`. If it fails, that is a Fix first finding: stop checking and write the review with it. 
+2. Read the script or notebook in full, the queries and results it saved (`data/<name>.sql` and `data/<name>.json` in the run folder), and the result tables it wrote.
+3. Rerun the script from the repo root with `poetry run python <path>`. If it fails, that is a Fix first finding: stop checking and write the review with it. Then rerun the saved queries behind the headline numbers through `mcp__course-db__execute_sql`, save each result as `data/review_<name>.json` in the same format, and have `review_checks.py` (Act 3) check that it matches the saved `data/<name>.json`. A mismatch is a Fix first finding: the script ran on results the database does not return.
 A notebook cannot be rerun in this project, so read its saved outputs and list the rerun under "Not checked".
 
 ## Act 3: Check the mechanics, in code
-Mechanics come first, because a point about the reasoning behind a wrong number is wasted. Write `review_checks.py` next to the work and run it with `poetry run python`. It reads `data/*.csv`, uses `helpers.checks` where one fits, and prints aggregates and each check's `summary`, never rows. 
+Mechanics come first, because a point about the reasoning behind a wrong number is wasted. Write `review_checks.py` next to the work and run it with `poetry run python`. It reads the work's saved results and your own, uses `helpers.checks` where one fits, and prints aggregates and each check's `summary`, never rows. It never reads `data/*.csv` and never connects to the database.
+
+A check that needs the database runs as an aggregate query through `mcp__course-db__execute_sql`. Save each query in the run folder as `data/review_<name>.sql`, and its result exactly as returned as `data/review_<name>.json`, one JSON object per row and one row per line. Every query returns counts, sums, rates, or minimums and maximums, never rows: no `SELECT *`, no `LIMIT` to peek, no lists of ids. Keep each result under about 200 rows, and on `sessions`, filter by date first.
 
 Check five things:
-1. **Joins that duplicate rows.** Run `join_fan_out` on every join the script makes. A join that grows the row count inflates every sum and count after it.
+1. **Joins that duplicate rows.** For every join in the saved queries, query the row count and the distinct count of the key with and without the join. Run `join_fan_out` on every join the script makes on saved results. A join that grows the row count inflates every sum and count after it.
 2. **Grain.** Name what one row represents at each step, and check that what is counted matches the question: e.g. users, not subscriptions; or subscriptions, not payments.
 3. **Denominators.** Check that each rate divides by the right base: matured trials only, free plans out of churn and retention, scheduled starts after 2026-09-24 out of any count of what has happened.
-4. **Date boundaries.** Run `date_boundaries` on each period that is compared. Check that every window is judged against the end of 2026-09-24, the last day in the data. `matured_only` with no `as_of` judges against the real date, and `as_of="2026-09-24"` cuts at midnight, dropping windows that closed during that day. The right cutoff is `as_of="2026-09-24 23:59:59"`.
-5. **Filters.** Count the rows each filter drops, and check that none drops more than it should: nulls dropped without a word, or dates compared as timestamps.
+4. **Date boundaries.** Run `date_boundaries` on the minimum and maximum of each date column a compared period runs on. Check that every window is judged against the end of 2026-09-24, the last day in the data, in the queries as in the script. In SQL, `<= DATE '2026-09-24'` on a timestamp cuts at midnight, and `< DATE '2026-09-25'` keeps that whole day. `matured_only` with no `as_of` judges against the real date, and `as_of="2026-09-24"` cuts at midnight, dropping windows that closed during that day. The right cutoff is `as_of="2026-09-24 23:59:59"`.
+5. **Filters.** Count the rows each filter drops, with an aggregate query, and check that none drops more than it should: nulls dropped without a word, or dates compared as timestamps.
 
-Recompute at least one headline number a second, independent way. If the two disagree, find out which is right before writing anything.
+Recompute at least one headline number a second, independent way, such as its own aggregate query. If the two disagree, find out which is right before writing anything.
 
 ## Act 4: Check the reasoning
 Then read the work against the frame:

@@ -34,7 +34,7 @@ Your job is to read the work as a peer would, someone who did not write it and d
 If the user cannot say, review the mechanics only and list the reasoning under "Not checked".
 
 ## Act 2: Load the context
-1. Read `knowledge/beam/quirks.md`, `knowledge/beam/corrections.md`, and the note in `knowledge/beam/` for each table the work reads.
+1. Read `knowledge/beam/quirks.md`, `knowledge/beam/corrections.md`, and the YAML file in `knowledge/beam/` for each table the work reads.
 2. Read the script or notebook in full, and the result tables it wrote.
 3. Rerun the script from the repo root with `poetry run python <path>`. If it fails, that is a Fix first finding: stop checking and write the review with it. 
 A notebook cannot be rerun in this project, so read its saved outputs and list the rerun under "Not checked".

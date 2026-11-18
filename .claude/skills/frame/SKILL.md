@@ -31,7 +31,7 @@ Your job is to pin the question to the decision it informs and the person who ma
 ## Act 2: Read what is already known
 
 1. Read `knowledge/beam/corrections.md`. A correction may already settle what a word in the question means; carry it into the note.
-2. List the tables with `ls data/`. For each one, read `knowledge/beam/<table>.md` if it exists; otherwise read only its header line with `head -1 data/<table>.csv`. Never read rows.
+2. List the tables from the YAML files in `knowledge/beam/`, one file per table, and read each file for the table's columns. Never read rows.
 
 ## Act 3: Write the note
 
@@ -58,7 +58,7 @@ Your job is to pin the question to the decision it informs and the person who ma
    - **Decision** and **Audience:** from what the user said, in their wording. Never your own.
    - **What would change the decision:** if the user said it, use it. Otherwise write it from the decision and mark it "(inferred)". Never add a threshold the user did not give.
    - **Not in scope:** what the decision needs but the data cannot show, judged from the question and the table notes. For example, every trial lasts 14 days, so the data cannot show how another length would do. Name only limits the data sets, never a choice to do less work. If there are none, write "none identified".
-   - **Tables likely involved:** only tables that exist in `data/`, named without `.csv`, because `/analyst` looks for `knowledge/beam/<table>.md` by that name. List a table only if the question needs it.
+   - **Tables likely involved:** only tables that have a YAML file in `knowledge/beam/`, named as the file is without `.yaml` (`user_activity_metrics`, not `marts.user_activity_metrics`), because `/analyst` looks for `knowledge/beam/<table>.yaml` by that name. List a table only if the question needs it.
 5. No em dashes anywhere in the note.
 
 ## Deliver

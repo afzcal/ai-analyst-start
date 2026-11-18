@@ -35,7 +35,7 @@ Your job is to pin the question to the decision it informs and the person who ma
 
 ## Act 3: Write the note
 
-1. Get today's date with `date +%F`; never guess it. It names the folder only. The analysis itself treats 2026-09-24, the last day in the data, as today.
+1. Get today's date with `date +%F`; never guess it. It names the folder only. The analysis itself treats the data's last day (the date is in AGENTS.md) as today.
 2. Make a slug of three to five lowercase words from the question, joined by hyphens, such as `trial-length-conversion`. If `outputs/<date>_<slug>/` already exists, add `-2`, `-3` and so on. Never write into another question's folder.
 3. Write `outputs/<date>_<slug>/frame.md` in this shape:
 

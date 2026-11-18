@@ -1,0 +1,78 @@
+# Beam semantic layer: user_revenue_summary
+# Draft by Claude, 2026-11-17, from a profile of the live table and a comparison with users, subscriptions, and payments.
+# Module 01 had no note for this table, and the database has no table or column comments for it,
+# so every description here is drafted.
+# Reviewed 2026-11-17: no measures or golden queries, since revenue figures come from payments.
+
+table: marts.user_revenue_summary
+description: >
+  One row per user with their plan and lifetime payments, as of 2026-07-29: 27,000 users who signed up
+  from 2022-01-01 through 2026-07-29. The 4,165 users who signed up later are missing, and so are all trial users
+  (trials launched 2026-08-01). Payments after 2026-07-29 are not counted.
+  The payment totals don't reconcile with payments: they differ for 2,245 users (see total_payments).
+  For any revenue figure, use payments instead.
+primary_key: user_id  # not set in the database, but unique and never empty
+
+fields:
+  - name: user_id
+    type: integer
+    description: The user. Links to users.user_id; every value is in users and in subscriptions.
+    role: entity
+
+  - name: country
+    type: text
+    description: The user's market, copied from users.country (it matches for every row).
+    role: dimension
+    values: [US, EU, India, Rest]
+
+  - name: signup_date
+    type: timestamp
+    description: >
+      When the user signed up, copied from users.signup_date (it matches for every row). From 2022-01-01 to 2026-07-29.
+      Some values carry a midnight time and others a real time, so compare on dates.
+    role: dimension
+
+  - name: plan
+    type: text
+    description: >
+      The user's plan: free (16,154 users), monthly (8,167), or annual (2,679). It matches subscriptions.plan for every row.
+      Free users never have payments. 638 users on a paid plan have no payments either,
+      and 403 of them have a subscription that starts after 2026-07-29.
+    role: dimension
+    values: [free, monthly, annual]
+
+  - name: total_payments
+    type: integer
+    description: >
+      Number of payments the user made up to 2026-07-29, from 0 to 56. It matches the count in payments for 24,755 users
+      and differs for 2,245 users on monthly or annual plans, by up to 11 payments either way
+      (higher here for 1,326, lower for 919). In all, this table has 133,558 payments against 132,475 in payments up to 2026-07-29.
+    role: measure
+
+  - name: total_revenue_usd
+    type: numeric
+    description: >
+      Total the user paid up to 2026-07-29, in US dollars, from 0 to 570. Off for the same 2,245 users as total_payments:
+      the table sums to $1,864,964 against $1,850,972 in payments up to 2026-07-29.
+    role: measure
+
+  - name: last_payment_date
+    type: timestamp
+    description: >
+      When the user's latest payment was taken, up to 2026-07-29. Empty for the 16,792 users with no payments.
+      It differs from payments for the same 2,245 users as total_payments.
+      Some values carry a midnight time and others a real time, so compare on dates.
+    role: dimension
+
+relationships:
+  - to: users
+    on: user_revenue_summary.user_id = users.user_id
+    type: one_to_one
+  - to: subscriptions
+    on: user_revenue_summary.user_id = subscriptions.user_id
+    type: one_to_one
+
+derived_dimensions:
+  - name: signup_month
+    description: The month the user signed up, for signup cohorts.
+    formula: DATE_TRUNC('month', signup_date)::date

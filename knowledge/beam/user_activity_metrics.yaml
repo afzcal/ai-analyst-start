@@ -1,0 +1,87 @@
+# Beam semantic layer: user_activity_metrics
+# Draft by Claude, 2026-11-17, from the database comments, the Module 01 notes
+# (knowledge/beam/user_activity_metrics.md, quirks.md), and a profile of the live table.
+# Reviewed 2026-11-17.
+
+table: marts.user_activity_metrics
+description: >
+  One row per day with Beam's platform-wide active user counts: daily (dau), 7-day (wau), and 30-day (mau).
+  998 days from 2024-01-01 through 2026-09-24, with no day missing. The table comment says the metrics run
+  "since 2025", but the data starts on 2024-01-01.
+  The windows count only sessions from 2024-01-01 on, although sessions go back to 2022, so they fill late:
+  wau is not full until 2024-01-07 and mau until 2024-01-30. Before then both read low, and daily actives read
+  as a high share of monthly actives (1.0 on 2024-01-01, about 0.25 from February 2024). Start any comparison after January 2024.
+  It has no user id, plan, country, or device, so it cannot say which users or groups drove a change in activity;
+  use sessions for that. Never sum dau, wau, or mau across days, since the same users are counted on many days.
+primary_key: date
+
+fields:
+  - name: date
+    type: date
+    description: The day measured, and the last day of the wau and mau windows.
+    role: dimension
+
+  - name: dau
+    type: integer
+    description: Daily active users. Distinct users with at least one session on this date. From 1,278 to 5,198.
+    role: measure
+
+  - name: wau
+    type: integer
+    description: >
+      Weekly active users. Distinct users with at least one session in the 7 days ending on this date
+      (the date and the 6 days before it).
+    role: measure
+
+  - name: mau
+    type: integer
+    description: >
+      Monthly active users. Distinct users with at least one session in the 30 days ending on this date.
+      A rolling window, not a calendar month, so it differs from sessions.active_users over a calendar month.
+    role: measure
+
+relationships:
+  - to: sessions
+    on: user_activity_metrics.date = sessions.session_date::date
+    type: one_to_many
+    description: >
+      Not a foreign key. This table is built from sessions: dau matches the distinct users in sessions on all 998 days,
+      wau matched on 2026-09-24, and mau on 2024-01-15, 2024-01-31, and 2026-09-24.
+
+measures:
+  - name: avg_dau
+    formula: AVG(dau) FILTER (WHERE date >= period_start AND date < period_end)
+    description: Average daily active users over the days in the period.
+
+  - name: dau_mau_ratio
+    formula: AVG(dau::numeric / mau) FILTER (WHERE date >= period_start AND date < period_end)
+    description: >
+      Stickiness: on an average day in the period, the share of the last 30 days' active users who were active that day.
+      About 0.25 from February 2024 through August 2025. With the September 2025 signup spike, monthly actives jump
+      (average mau 15,107 in August 2025, 19,041 in October) while daily actives barely move (3,826 to 3,986),
+      so the ratio falls to 0.24 in September 2025 and about 0.21 from October 2025, then drifts to about 0.20 by mid-2026.
+      Treat the drop as a known anomaly and say so whenever it enters a comparison.
+      The spike itself is in users.yaml and sessions.yaml.
+
+derived_dimensions:
+  - name: activity_month
+    description: The calendar month of the day measured.
+    formula: DATE_TRUNC('month', date)::date
+
+golden_queries:
+  - name: monthly_stickiness
+    description: >
+      Average daily actives, monthly actives, and DAU/MAU ratio per month, 2025 through August 2026.
+      September 2025 shows the known drop in the ratio.
+    sql: |
+      SELECT
+          DATE_TRUNC('month', uam.date)::date AS activity_month
+          , ROUND(AVG(uam.dau)) AS avg_dau
+          , ROUND(AVG(uam.mau)) AS avg_mau
+          , ROUND(AVG(uam.dau::numeric / uam.mau), 3) AS avg_dau_mau_ratio
+      FROM marts.user_activity_metrics AS uam
+      WHERE TRUE
+          AND uam.date >= DATE '2025-01-01'
+          AND uam.date < DATE '2026-09-01'
+      GROUP BY 1
+      ORDER BY 1;

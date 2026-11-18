@@ -77,5 +77,5 @@ Keep it under eight lines. Do not paste the note into the CLI.
 - **The user's words, not yours.** The decision and the decider are asked for, never reconstructed.
 - **Ask plainly, offer no menu.** A list of likely decisions invites the user to pick a guess.
 - **One folder per question.** Never write into a folder another question made.
-- **Frame reads no rows.** Table notes and header lines are enough to name the tables; the data waits for Profile and Analyse.
+- **Frame reads no rows.** The YAML files are enough to name the tables; the data waits for Profile and Analyse.
 - **Write for the steps after you.** Analyse, Validate and Deliver each read the note cold, so it has to stand on its own.

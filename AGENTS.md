@@ -11,7 +11,7 @@ A data analyst that runs inside Claude Code on Beam's data. Beam is a media app 
 ## Where things live
 ```
 data/                    Beam CSV exports; never modified
-knowledge/beam/          one note per table, quirks.md, corrections.md
+knowledge/beam/          one YAML file per table (the semantic layer), quirks.md, corrections.md
 helpers/                 profile, checks, charts; the arithmetic runs here
 outputs/<date>_<slug>/   one folder per question:
                          frame.md, analysis.py, data/, charts/, review.md, brief.md
@@ -25,4 +25,4 @@ outputs/<date>_<slug>/   one folder per question:
 - Name run folders with today's date (YYYY-MM-DD).
 - The data ends on 2026-09-24. Treat that as "today" in every analysis, never the real date.
 - No em dashes in anything written for a reader.
-- Read `knowledge/beam/` (table notes, `quirks.md`, `corrections.md`) before touching data; when the user corrects you, append one dated line to `corrections.md` and continue.
+- Read `knowledge/beam/` (the table YAML files, `quirks.md`, `corrections.md`) before touching data; when the user corrects you, append one dated line to `corrections.md` and continue.

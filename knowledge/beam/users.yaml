@@ -1,0 +1,75 @@
+# Beam semantic layer: users
+# Draft by Claude, 2026-11-15, from the database comments, the Module 01 notes
+# (knowledge/beam/users.md, quirks.md), and a profile of the live table.
+# Reviewed 2026-11-15.
+
+table: users
+description: >
+  One row per user who signed up for Beam, from 2022-01-01 through 2026-09-24, the last day in the data.
+  Every subscription, session, and trial belongs to a user here.
+primary_key: user_id
+
+fields:
+  - name: user_id
+    type: integer
+    description: Unique id of the user.
+    role: entity
+
+  - name: signup_date
+    type: timestamp
+    description: >
+      Date and time the user signed up. About 43% of values carry a real time and the rest a midnight time,
+      so compare on dates (signup_date::date), not on timestamps.
+      September 2025 has a known signup spike (3,056 signups against about 650 to 700 in nearby months).
+      Treat it as a known anomaly and say so whenever it enters a comparison.
+    role: dimension
+
+  - name: country
+    type: text
+    description: >
+      The user's market, from IP geolocation at signup. Four values: US, EU, India, and Rest.
+      EU and Rest are regions, not countries; Rest is everywhere outside the other three. 
+      # Note: May need to revisit this but not now.
+    role: dimension
+    values: [US, EU, India, Rest]
+
+  - name: device_type
+    type: text
+    description: The device the user signed up on. It can differ from the devices they use later.
+    role: dimension
+    values: [Web, Android, iOS]
+
+relationships:
+  - to: subscriptions
+    on: users.user_id = subscriptions.user_id
+    type: one_to_one  # at most one; the 418 users without one are users whose trial was still open
+  - to: sessions
+    on: users.user_id = sessions.user_id
+    type: one_to_many
+  - to: trials
+    on: users.user_id = trials.user_id
+    type: one_to_one  # at most one trial per user
+
+measures:
+  - name: signups
+    formula: COUNT(user_id) FILTER (WHERE signup_date >= period_start AND signup_date < period_end)
+    description: Users who signed up in the period.
+
+derived_dimensions:
+  - name: signup_month
+    description: The month the user signed up, for signup cohorts.
+    formula: DATE_TRUNC('month', signup_date)::date
+
+golden_queries:
+  - name: monthly_signups_by_country
+    description: Signups per month by market in 2025 and 2026. September 2025 shows the known spike.
+    sql: |
+      SELECT
+          DATE_TRUNC('month', usr.signup_date)::date AS signup_month
+          , usr.country
+          , COUNT(*) AS signups
+      FROM users AS usr
+      WHERE TRUE
+          AND usr.signup_date >= DATE '2025-01-01'
+      GROUP BY 1, 2
+      ORDER BY 1, 2;

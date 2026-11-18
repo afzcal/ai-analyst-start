@@ -1,0 +1,82 @@
+# Beam semantic layer: payments
+# Draft by Claude, 2026-11-15, from the database comments, the Module 01 notes
+# (knowledge/beam/payments.md, quirks.md), and a profile of the live table.
+# Reviewed 2026-11-15.
+
+table: payments
+description: >
+  One row per payment charged to a paid subscription, many per subscription (one per billing period).
+  144,065 payments from 2022-01-12 through 2026-09-24. Free subscriptions have no payments.
+  Every payment falls between its subscription's start_date and end_date.
+primary_key: payment_id
+
+fields:
+  - name: payment_id
+    type: integer
+    description: Unique id of the payment.
+    role: entity
+
+  - name: subscription_id
+    type: integer
+    description: The subscription the payment belongs to. Links to subscriptions.subscription_id. To get the user, join through subscriptions.
+    role: relationship
+
+  - name: payment_date
+    type: timestamp
+    description: When the payment was taken. Some values carry a midnight time and others a real time, so compare on dates.
+    role: dimension
+
+  - name: amount_usd
+    type: numeric
+    description: >
+      Amount charged, in US dollars. Only three values: 10 (monthly plan up to 2026-02-28),
+      12 (monthly plan from 2026-03-01, after the price rise), and 100 (annual plan, unchanged).
+      A jump in monthly revenue from March 2026 is mostly the price change, not more payments.
+    role: measure
+
+  - name: method
+    type: text
+    description: How the user paid.
+    role: dimension
+    values: [card, paypal, apple_pay, google_pay]
+
+relationships:
+  - to: subscriptions
+    on: payments.subscription_id = subscriptions.subscription_id
+    type: many_to_one
+
+measures:
+  - name: revenue_usd
+    formula: SUM(amount_usd) FILTER (WHERE payment_date >= period_start AND payment_date < period_end)
+    description: Cash collected in the period. Annual payments count in full in the month they were paid, not spread over the year.
+
+  - name: payment_count
+    formula: COUNT(payment_id) FILTER (WHERE payment_date >= period_start AND payment_date < period_end)
+    description: Payments taken in the period.
+
+  - name: paying_subscriptions
+    formula: COUNT(DISTINCT subscription_id) FILTER (WHERE payment_date >= period_start AND payment_date < period_end)
+    description: Subscriptions with at least one payment in the period. Annual subscribers pay once a year, so they show up in only one month a year.
+
+derived_dimensions:
+  - name: payment_month
+    description: The calendar month of the payment.
+    formula: DATE_TRUNC('month', payment_date)::date
+
+golden_queries:
+  - name: monthly_revenue_by_plan
+    description: Revenue and payments per month by plan in 2026, through August (September stops on the 24th).
+    sql: |
+      SELECT
+          DATE_TRUNC('month', pay.payment_date)::date AS payment_month
+          , sub.plan
+          , COUNT(*) AS payments
+          , SUM(pay.amount_usd) AS revenue_usd
+      FROM payments AS pay
+      JOIN subscriptions AS sub
+          ON pay.subscription_id = sub.subscription_id
+      WHERE TRUE
+          AND pay.payment_date >= DATE '2026-01-01'
+          AND pay.payment_date < DATE '2026-09-01'
+      GROUP BY 1, 2
+      ORDER BY 1, 2;

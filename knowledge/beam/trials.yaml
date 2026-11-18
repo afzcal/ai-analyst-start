@@ -1,0 +1,107 @@
+# Beam semantic layer: trials
+# Draft by Claude, 2026-11-15, from the database's table comment, the Module 01 notes
+# (knowledge/beam/trials.md, quirks.md), and a profile of the live table.
+# The database has no column comments for this table, so every field description here is drafted.
+# Reviewed 2026-11-15.
+
+table: trials
+description: >
+  One row per 14-day full-access trial, and at most one trial per user. Trials launched on 2026-08-01,
+  and every trial started on the same day its user signed up, so trials are for new signups only.
+  A trial auto-converts to a paid subscription at ends_at unless the user cancels first.
+  On 2026-09-24, the last day in the data, 418 trials were still open: their outcome is empty,
+  and they are not failures.
+primary_key: trial_id
+
+fields:
+  - name: trial_id
+    type: integer
+    description: Unique id of the trial.
+    role: entity
+
+  - name: user_id
+    type: integer
+    description: The user who took the trial. Links to users.user_id. Unique in this table.
+    role: relationship
+
+  - name: started_at
+    type: timestamp
+    description: When the trial started, the same day the user signed up. Ranges from 2026-08-01 to 2026-09-24.
+    role: dimension
+
+  - name: ends_at
+    type: timestamp
+    description: >
+      When the trial ends, exactly 14 days after started_at. A converted trial's paid subscription
+      starts at this exact time. Values after 2026-09-24 belong to trials that were still open, or
+      that were canceled early and whose free subscription is scheduled to start then.
+    role: dimension
+
+  - name: outcome
+    type: text
+    description: >
+      How the trial ended: converted (became a paid subscription) or canceled (the user canceled before ends_at
+      and moved to the free plan). Empty while the trial is still open. Never count empty outcomes as failures.
+    role: dimension
+    values: [converted, canceled]
+
+  - name: outcome_at
+    type: timestamp
+    description: >
+      When the outcome happened. For converted trials it always equals ends_at, since conversion is automatic.
+      For canceled trials it is always before ends_at, when the user canceled. Empty while the trial is open.
+    role: dimension
+
+relationships:
+  - to: users
+    on: trials.user_id = users.user_id
+    type: one_to_one  # at most one trial per user
+  - to: subscriptions
+    on: trials.user_id = subscriptions.user_id
+    type: one_to_one
+    description: >
+      Not a foreign key, but every resolved trial has a subscription row that starts at ends_at:
+      a monthly or annual plan if converted, the free plan if canceled. Open trials have no subscription row yet.
+
+measures:
+  - name: trials_started
+    formula: COUNT(trial_id) FILTER (WHERE started_at >= period_start AND started_at < period_end)
+    description: Trials that started in the period.
+
+  - name: converted_trials
+    formula: COUNT(trial_id) FILTER (WHERE outcome = 'converted')
+    description: Trials that became paid subscriptions.
+
+  - name: trial_conversion_rate
+    formula: COUNT(trial_id) FILTER (WHERE outcome = 'converted' AND ends_at <= analysis_date) / COUNT(trial_id) FILTER (WHERE ends_at <= analysis_date)
+    description: >
+      Of the trials whose 14 days are over (ends_at on or before the analysis date), the share that converted.
+      Count a trial, canceled or converted, only once its 14 days are over, since cancellations are recorded
+      the day they happen but conversions only on day 14.
+      For weeks with few or no finished trials, say there's no rate yet instead of reporting one.
+
+derived_dimensions:
+  - name: trial_state
+    description: open, converted, or canceled. Open means the trial hadn't ended by 2026-09-24.
+    formula: COALESCE(outcome, 'open')
+
+  - name: start_week
+    description: The week the trial started, for weekly trial cohorts.
+    formula: DATE_TRUNC('week', started_at)::date
+
+golden_queries:
+  - name: weekly_trial_conversion
+    description: >
+      Trials started each week, how many had matured by 2026-09-24, and the conversion rate among matured trials.
+      Weeks with few or no matured trials have no reliable rate yet.
+    sql: |
+      SELECT
+          DATE_TRUNC('week', tri.started_at)::date AS start_week
+          , COUNT(*) AS trials_started
+          , COUNT(*) FILTER (WHERE tri.ends_at < DATE '2026-09-25') AS matured
+          , COUNT(*) FILTER (WHERE tri.outcome = 'converted' AND tri.ends_at < DATE '2026-09-25') AS converted
+          , ROUND(COUNT(*) FILTER (WHERE tri.outcome = 'converted' AND tri.ends_at < DATE '2026-09-25')::numeric
+              / NULLIF(COUNT(*) FILTER (WHERE tri.ends_at < DATE '2026-09-25'), 0), 4) AS conversion_rate
+      FROM trials AS tri
+      GROUP BY 1
+      ORDER BY 1;

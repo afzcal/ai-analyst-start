@@ -1,0 +1,153 @@
+# Beam semantic layer: subscriptions
+# Draft by Claude, 2026-11-15, from the database comments, the Module 01 notes
+# (knowledge/beam/subscriptions.md, quirks.md), and a profile of the live table.
+# Reviewed 2026-11-15.
+
+table: subscriptions
+description: >
+  One row per subscription, and one subscription per user (user_id is unique here).
+  Plans are free, monthly, or annual; only monthly and annual are paid.
+  Churn is always read from end_date, never from status.
+primary_key: subscription_id
+
+fields:
+  - name: subscription_id
+    type: integer
+    description: Unique id of the subscription.
+    role: entity
+
+  - name: user_id
+    type: integer
+    description: >
+      The subscriber. Links to users.user_id. Unique in this table, so each user has at most one subscription row.
+      418 users have no subscription row: exactly the users whose trial was still open on 2026-09-24. A trial user gets a subscription row when the trial ends.
+    role: relationship
+
+  - name: plan
+    type: text
+    description: >
+      The subscription plan: free, monthly, or annual. Paid plans are monthly and annual.
+      Free subscriptions never end and have no end_date, so leave them out of any churn or retention calculation.
+      The monthly price rose from $10 to $12 in March 2026.
+    role: dimension
+    values: [free, monthly, annual]
+
+  - name: start_date
+    type: timestamp
+    description: >
+      When the subscription started. Some values carry a midnight time and others a real time, so compare on dates.
+      1,549 subscriptions start after 2026-09-24: these are scheduled starts. Leave them out of any count of what has happened.
+    role: dimension
+
+  - name: end_date
+    type: timestamp
+    description: >
+      When the subscription ended or is scheduled to end. Empty means the subscription has no end date (active, or free).
+      A date after the analysis date is a scheduled cancellation, and that subscription is still active on the analysis date.
+      This is the field to read churn from.
+    role: dimension
+
+  - name: status
+    type: text
+    description: >
+      Label on the subscription: active, expired, or canceled. Ended subscriptions were labeled expired up to July 2026
+      and canceled from August 2026 on, and scheduled cancellations are already labeled canceled.
+      So never read churn or "is active" from status; use end_date.
+    role: dimension
+    values: [active, expired, canceled]
+
+relationships:
+  - to: users
+    on: subscriptions.user_id = users.user_id
+    type: many_to_one  # in practice one-to-one: user_id is unique here
+  - to: payments
+    on: subscriptions.subscription_id = payments.subscription_id
+    type: one_to_many
+
+measures:
+  - name: active_paid_subscriptions
+    formula: COUNT(subscription_id) FILTER (WHERE plan IN ('monthly', 'annual') AND start_date < period_end AND (end_date IS NULL OR end_date >= period_start))
+    description: >
+      Paid subscriptions active at any point in the period: those active at the start plus those that started during it.
+      The denominator for churn_rate.
+
+  - name: active_paid_subscriptions_at_start
+    formula: COUNT(subscription_id) FILTER (WHERE plan IN ('monthly', 'annual') AND start_date < period_start AND (end_date IS NULL OR end_date >= period_start))
+    description: Paid subscriptions active at the start of the period. The denominator for churn_rate_month_start.
+
+  - name: churned_subscriptions
+    formula: COUNT(subscription_id) FILTER (WHERE plan IN ('monthly', 'annual') AND end_date >= period_start AND end_date < period_end)
+    description: Paid subscriptions whose end_date falls in the period, including ones that started in the same period.
+
+  - name: churned_subscriptions_from_start
+    formula: COUNT(subscription_id) FILTER (WHERE plan IN ('monthly', 'annual') AND start_date < period_start AND end_date >= period_start AND end_date < period_end)
+    description: Paid subscriptions active at the start of the period whose end_date falls in the period.
+
+  - name: churn_rate
+    formula: churned_subscriptions / active_paid_subscriptions
+    description: >
+      The default churn rate. Share of paid subscriptions active at any point in the period that ended during it.
+      Counts every churned paid subscription, including ones that started and ended in the same period.
+      New subscriptions join the denominator with only part of the period in which to churn, so in months
+      with many new subscriptions this rate reads a little lower than churn_rate_month_start.
+      Use this one unless the question asks for churn of the base at the start of the month.
+
+  - name: churn_rate_month_start
+    formula: churned_subscriptions_from_start / active_paid_subscriptions_at_start
+    description: >
+      Churn of the starting base. Share of paid subscriptions active at the start of the period that ended during it.
+      Subscriptions that start during the period are left out of both the numerator and the denominator,
+      so every subscription counted had the whole period in which to churn, and months with heavy signups compare fairly.
+      In 2026 it runs 0.04 to 0.26 points above churn_rate.
+
+  - name: new_paid_subscriptions
+    formula: COUNT(subscription_id) FILTER (WHERE plan IN ('monthly', 'annual') AND start_date >= period_start AND start_date < period_end)
+    description: Paid subscriptions that started in the period. Leave out scheduled starts after the analysis date.
+
+derived_dimensions:
+  - name: is_paid
+    description: True for monthly and annual plans, false for free.
+    formula: plan IN ('monthly', 'annual')
+
+  - name: tenure_band
+    description: >
+      How long a subscriber had been paying at the start of the period being analysed.
+      Beam cuts tenure into these four bands and no others, so that groups compare across analyses.
+    formula: |
+      CASE
+          WHEN period_start - start_date < INTERVAL '6 months' THEN 'under 6 months'
+          WHEN period_start - start_date < INTERVAL '12 months' THEN '6 to 12 months'
+          WHEN period_start - start_date < INTERVAL '24 months' THEN '12 to 24 months'
+          ELSE 'over 24 months'
+      END
+
+golden_queries:
+  - name: monthly_paid_churn_rate
+    description: >
+      Monthly churn for paid plans from January to August 2026, both ways: churn_rate (all paid subscriptions
+      active in the month) and churn_rate_month_start (only those active on the 1st). September 2026 is left
+      out because the data stops on the 24th and some of its end dates are scheduled cancellations.
+    sql: |
+      WITH months AS (
+          SELECT
+              generate_series(DATE '2026-01-01', DATE '2026-08-01', INTERVAL '1 month')::date AS month_start
+      )
+      SELECT
+          mon.month_start
+          , COUNT(*) AS active_paid_subscriptions
+          , COUNT(*) FILTER (WHERE sub.end_date < mon.month_start + INTERVAL '1 month') AS churned_subscriptions
+          , ROUND(COUNT(*) FILTER (WHERE sub.end_date < mon.month_start + INTERVAL '1 month')::numeric
+              / COUNT(*), 4) AS churn_rate
+          , COUNT(*) FILTER (WHERE sub.start_date < mon.month_start) AS active_paid_subscriptions_at_start
+          , COUNT(*) FILTER (WHERE sub.start_date < mon.month_start
+              AND sub.end_date < mon.month_start + INTERVAL '1 month') AS churned_subscriptions_from_start
+          , ROUND(COUNT(*) FILTER (WHERE sub.start_date < mon.month_start
+              AND sub.end_date < mon.month_start + INTERVAL '1 month')::numeric
+              / COUNT(*) FILTER (WHERE sub.start_date < mon.month_start), 4) AS churn_rate_month_start
+      FROM months AS mon
+      JOIN subscriptions AS sub
+          ON sub.plan IN ('monthly', 'annual')
+          AND sub.start_date < mon.month_start + INTERVAL '1 month'
+          AND (sub.end_date IS NULL OR sub.end_date >= mon.month_start)
+      GROUP BY mon.month_start
+      ORDER BY mon.month_start;

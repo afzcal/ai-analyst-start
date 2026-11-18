@@ -1,17 +1,14 @@
 # Beam data quirks
 
-Things we know about our own tables. Check this list before reading a number as a finding.
+This is no longer where facts about Beam's data live. Each table's quirks, rules, and definitions belong in that table's YAML file in this folder (the semantic layer), so every fact has one home and one version. Check the YAML files first.
 
-- **Monthly price change.** The monthly plan price rose from $10 to $12 in March 2026. Monthly payments before and after that point differ for that reason, not because of a data problem.
-- **Trials mature late.** Trials launched on 2026-08-01 and last 14 days. A trial's outcome is only known once it matures, so recent trials show `outcome` empty. Those are still open and must not be counted as failures.
-- **Free plans never end.** Rows with `subscriptions.plan = 'free'` have no `end_date`. Exclude them from any churn or retention calculation.
-- **Future end dates.** `subscriptions.end_date` can be in the future for scheduled cancellations. A subscription with a future end date is still active today.
-- **Future start dates.** Some subscriptions have a `start_date` after today. They are scheduled starts. Exclude rows that start after the analysis date from any count of what has happened.
-- **September 2025 spike.** September 2025 shows a signup spike of roughly five times a normal month, with a matching jump in the active base and in monthly actives. The daily-to-monthly active ratio falls from about .25 to about .21 at that point. Treat it as a known anomaly and say so whenever it enters a comparison.
-- **Timestamps everywhere.** Dates in the exports are timestamps. Many `users.signup_date` and subscription dates carry midnight times, others carry real times; compare on dates, not on timestamps, unless the time of day matters.
+A quirk that doesn't fit any table's YAML file yet can sit here for a while. Under each entry, say why it is here and where it should go, and move it there as soon as that file exists. An entry stays here for good only when no single table owns it, such as a quirk that spans several tables, and the entry has to say so.
 
-## New additions [CC Discovered and Generated]
+Corrections from the user go in `corrections.md`, not here.
 
-- **One row per user.** `user_id` is unique in both `trials` and `subscriptions`, so each user has at most one trial and one subscription row.
-- **Payments start in 2025.** `payments.payment_date` begins on 2025-01-01, though subscriptions go back to 2022, so payment history before 2025 is not in the export.
+## Waiting for a home
+
 - **Activity windows fill late.** In `user_activity_metrics`, the first days of January 2024 have weekly and monthly windows that are not full yet, so daily actives read as a high share of monthly actives. Start any comparison after January 2024.
+  - Here because `user_activity_metrics` has no YAML file yet; it moves there. Found in the Module 01 CSV export: check it against the database, whose table comment says the metrics run "since 2025".
+- **Daily-to-monthly ratio drop in September 2025.** With the September 2025 signup spike, the daily-to-monthly active ratio falls from about .25 to about .21. Treat it as a known anomaly and say so whenever it enters a comparison.
+  - Here for the same reason, and it moves to the same file. The spike itself is already in `users.yaml` and `sessions.yaml`.

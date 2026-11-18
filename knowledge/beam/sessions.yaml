@@ -1,0 +1,90 @@
+# Beam semantic layer: sessions
+# Draft by Claude, 2026-11-15, from the database comments and a profile of the live table.
+# (Module 01 had no sessions table, only the daily totals in user_activity_metrics.)
+# Reviewed 2026-11-15.
+
+table: sessions
+description: >
+  One row per user session in the Beam app: about 4.3 million sessions from 29,568 users,
+  from 2022-01-12 to 2026-09-26. This is the table for activity questions (active users, engagement, time spent).
+  It's large (about 4.3 million rows), so only query it with aggregates (counts, averages, groupings),
+  filter by date first, and never select raw rows from it.
+primary_key: session_id
+
+fields:
+  - name: session_id
+    type: integer
+    description: Unique id of the session.
+    role: entity
+
+  - name: user_id
+    type: integer
+    description: The user who had the session. Links to users.user_id. No session falls before the user's signup date.
+    role: relationship
+
+  - name: session_date
+    type: timestamp
+    description: >
+      The day of the session. Stored as a timestamp but always at midnight, so it holds a date only.
+      The last day in the rest of the data, the other tables, is 2026-09-24. Howevere, here 273 sessions fall on 2026-09-25 and -26.
+      Leave those two dates out of any comparison with other tables.
+    role: dimension
+
+  - name: duration_minutes
+    type: integer
+    description: Length of the session in minutes, from 1 to 157, median 7.
+    role: measure
+
+  - name: activity_type
+    type: text
+    description: >
+      The main thing the user did in the session: browse (about 60% of sessions), listen (30%), or read (10%).
+    role: dimension
+    values: [browse, listen, read]
+
+relationships:
+  - to: users
+    on: sessions.user_id = users.user_id
+    type: many_to_one
+
+measures:
+  - name: session_count
+    formula: COUNT(session_id) FILTER (WHERE session_date >= period_start AND session_date < period_end)
+    description: Sessions in the period.
+
+  - name: active_users
+    formula: COUNT(DISTINCT user_id) FILTER (WHERE session_date >= period_start AND session_date < period_end)
+    description: >
+      Users with at least one session in the period. Over a calendar month this is monthly active users (MAU);
+      over a day, daily active users (DAU).
+
+  - name: total_minutes
+    formula: SUM(duration_minutes) FILTER (WHERE session_date >= period_start AND session_date < period_end)
+    description: Total time spent in the app in the period.
+
+  - name: avg_session_minutes
+    formula: AVG(duration_minutes)
+    description: Average session length.
+
+derived_dimensions:
+  - name: session_month
+    description: The calendar month of the session.
+    formula: DATE_TRUNC('month', session_date)::date
+
+golden_queries:
+  - name: monthly_active_users
+    description: >
+      Calendar-month active users and sessions per active user, 2025 through August 2026.
+      September 2025 shows the jump in actives that follows the signup spike.
+    sql: |
+      SELECT
+          DATE_TRUNC('month', ses.session_date)::date AS session_month
+          , COUNT(DISTINCT ses.user_id) AS active_users
+          , COUNT(*) AS sessions
+          , ROUND(COUNT(*)::numeric / COUNT(DISTINCT ses.user_id), 2) AS sessions_per_active_user
+      FROM sessions AS ses
+      WHERE TRUE
+          AND ses.session_date >= DATE '2025-01-01'
+          AND ses.session_date < DATE '2026-09-01'
+      GROUP BY 1
+      ORDER BY 1;

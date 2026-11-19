@@ -115,5 +115,5 @@ Keep it under ten lines. Do not paste the review into the CLI.
 - **Assume it is wrong until a check says otherwise.** The author already believes it.
 - **Three findings, ranked.** A review with ten points gets none of them fixed.
 - **Say what to fix, change nothing.** The work stays as it was handed to you.
-- **Judge against 2026-09-24.** The data ends there; the real date has no place in a review.
+- **Judge against the data's last day.** The date is in AGENTS.md; the real date has no place in a review.
 - **Say what you did not check.** A clean review of half the work reads as a clean review of all of it.

@@ -1,0 +1,7 @@
+price_window,plan,active_paid_subscriptions_at_start,churned_subscriptions_from_start,churn_pct
+a_year_earlier,annual,8002,20,0.24993751562109473
+before,annual,11446,59,0.5154639175257731
+after,annual,13791,71,0.5148285113479806
+a_year_earlier,monthly,21266,178,0.837016834383523
+before,monthly,30518,677,2.218362933350809
+after,monthly,32307,1697,5.252731606153465

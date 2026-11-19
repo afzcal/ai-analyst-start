@@ -1,0 +1,32 @@
+{"price_window":"after","country":"EU","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":1571,"churned_subscriptions_from_start":38,"churn_rate_month_start":0.0242}
+{"price_window":"after","country":"EU","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":1497,"churned_subscriptions_from_start":123,"churn_rate_month_start":0.0822}
+{"price_window":"after","country":"EU","tenure_band":"over 24 months","active_paid_subscriptions_at_start":1923,"churned_subscriptions_from_start":76,"churn_rate_month_start":0.0395}
+{"price_window":"after","country":"EU","tenure_band":"under 6 months","active_paid_subscriptions_at_start":1358,"churned_subscriptions_from_start":121,"churn_rate_month_start":0.0891}
+{"price_window":"after","country":"India","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":1563,"churned_subscriptions_from_start":32,"churn_rate_month_start":0.0205}
+{"price_window":"after","country":"India","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":1616,"churned_subscriptions_from_start":155,"churn_rate_month_start":0.0959}
+{"price_window":"after","country":"India","tenure_band":"over 24 months","active_paid_subscriptions_at_start":1767,"churned_subscriptions_from_start":70,"churn_rate_month_start":0.0396}
+{"price_window":"after","country":"India","tenure_band":"under 6 months","active_paid_subscriptions_at_start":1445,"churned_subscriptions_from_start":116,"churn_rate_month_start":0.0803}
+{"price_window":"after","country":"Rest","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":1548,"churned_subscriptions_from_start":37,"churn_rate_month_start":0.0239}
+{"price_window":"after","country":"Rest","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":1519,"churned_subscriptions_from_start":118,"churn_rate_month_start":0.0777}
+{"price_window":"after","country":"Rest","tenure_band":"over 24 months","active_paid_subscriptions_at_start":1842,"churned_subscriptions_from_start":92,"churn_rate_month_start":0.0499}
+{"price_window":"after","country":"Rest","tenure_band":"under 6 months","active_paid_subscriptions_at_start":1513,"churned_subscriptions_from_start":132,"churn_rate_month_start":0.0872}
+{"price_window":"after","country":"US","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":3292,"churned_subscriptions_from_start":50,"churn_rate_month_start":0.0152}
+{"price_window":"after","country":"US","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":3062,"churned_subscriptions_from_start":218,"churn_rate_month_start":0.0712}
+{"price_window":"after","country":"US","tenure_band":"over 24 months","active_paid_subscriptions_at_start":4050,"churned_subscriptions_from_start":123,"churn_rate_month_start":0.0304}
+{"price_window":"after","country":"US","tenure_band":"under 6 months","active_paid_subscriptions_at_start":2741,"churned_subscriptions_from_start":196,"churn_rate_month_start":0.0715}
+{"price_window":"before","country":"EU","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":1415,"churned_subscriptions_from_start":13,"churn_rate_month_start":0.0092}
+{"price_window":"before","country":"EU","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":980,"churned_subscriptions_from_start":28,"churn_rate_month_start":0.0286}
+{"price_window":"before","country":"EU","tenure_band":"over 24 months","active_paid_subscriptions_at_start":1545,"churned_subscriptions_from_start":10,"churn_rate_month_start":0.0065}
+{"price_window":"before","country":"EU","tenure_band":"under 6 months","active_paid_subscriptions_at_start":2089,"churned_subscriptions_from_start":70,"churn_rate_month_start":0.0335}
+{"price_window":"before","country":"India","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":1453,"churned_subscriptions_from_start":21,"churn_rate_month_start":0.0145}
+{"price_window":"before","country":"India","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":1070,"churned_subscriptions_from_start":39,"churn_rate_month_start":0.0364}
+{"price_window":"before","country":"India","tenure_band":"over 24 months","active_paid_subscriptions_at_start":1341,"churned_subscriptions_from_start":12,"churn_rate_month_start":0.0089}
+{"price_window":"before","country":"India","tenure_band":"under 6 months","active_paid_subscriptions_at_start":2196,"churned_subscriptions_from_start":63,"churn_rate_month_start":0.0287}
+{"price_window":"before","country":"Rest","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":1560,"churned_subscriptions_from_start":23,"churn_rate_month_start":0.0147}
+{"price_window":"before","country":"Rest","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":980,"churned_subscriptions_from_start":37,"churn_rate_month_start":0.0378}
+{"price_window":"before","country":"Rest","tenure_band":"over 24 months","active_paid_subscriptions_at_start":1448,"churned_subscriptions_from_start":19,"churn_rate_month_start":0.0131}
+{"price_window":"before","country":"Rest","tenure_band":"under 6 months","active_paid_subscriptions_at_start":2144,"churned_subscriptions_from_start":81,"churn_rate_month_start":0.0378}
+{"price_window":"before","country":"US","tenure_band":"12 to 24 months","active_paid_subscriptions_at_start":3029,"churned_subscriptions_from_start":33,"churn_rate_month_start":0.0109}
+{"price_window":"before","country":"US","tenure_band":"6 to 12 months","active_paid_subscriptions_at_start":2196,"churned_subscriptions_from_start":74,"churn_rate_month_start":0.0337}
+{"price_window":"before","country":"US","tenure_band":"over 24 months","active_paid_subscriptions_at_start":2979,"churned_subscriptions_from_start":23,"churn_rate_month_start":0.0077}
+{"price_window":"before","country":"US","tenure_band":"under 6 months","active_paid_subscriptions_at_start":4093,"churned_subscriptions_from_start":131,"churn_rate_month_start":0.0320}

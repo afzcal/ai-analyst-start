@@ -1,0 +1,4 @@
+group,tenure_band,active_paid_subscriptions_at_start,churned_subscriptions_from_start,churn_rate_month_start,churn_pct
+Before: joined at $10,under 6 months,5058,130,0.0257,2.5701858442071965
+"After: joined at $10, moved to $12",under 6 months,3258,239,0.0734,7.335788827501534
+After: joined at $12,under 6 months,2850,289,0.1014,10.140350877192983

@@ -1,0 +1,6 @@
+{"plan":"annual","payment_period":"paid before 2026-03-01","subscriber":"started before 2026-03-01","amount_usd":100.00,"payments":4175}
+{"plan":"annual","payment_period":"paid from 2026-03-01","subscriber":"started before 2026-03-01","amount_usd":100.00,"payments":1321}
+{"plan":"annual","payment_period":"paid from 2026-03-01","subscriber":"started from 2026-03-01","amount_usd":100.00,"payments":733}
+{"plan":"monthly","payment_period":"paid before 2026-03-01","subscriber":"started before 2026-03-01","amount_usd":10.00,"payments":100452}
+{"plan":"monthly","payment_period":"paid from 2026-03-01","subscriber":"started before 2026-03-01","amount_usd":12.00,"payments":31864}
+{"plan":"monthly","payment_period":"paid from 2026-03-01","subscriber":"started from 2026-03-01","amount_usd":12.00,"payments":5520}

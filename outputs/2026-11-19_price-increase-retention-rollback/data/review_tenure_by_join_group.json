@@ -1,0 +1,12 @@
+{"price_window":"after","tenure_band":"12 to 24 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":7974,"churned_subscriptions_from_start":157,"churn_rate_month_start":0.0197}
+{"price_window":"after","tenure_band":"6 to 12 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":3788,"churned_subscriptions_from_start":271,"churn_rate_month_start":0.0715}
+{"price_window":"after","tenure_band":"6 to 12 months","join_group":"started Sep 2025","active_paid_subscriptions_at_start":3906,"churned_subscriptions_from_start":343,"churn_rate_month_start":0.0878}
+{"price_window":"after","tenure_band":"over 24 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":9582,"churned_subscriptions_from_start":361,"churn_rate_month_start":0.0377}
+{"price_window":"after","tenure_band":"under 6 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":3258,"churned_subscriptions_from_start":239,"churn_rate_month_start":0.0734}
+{"price_window":"after","tenure_band":"under 6 months","join_group":"started from 2026-03-01","active_paid_subscriptions_at_start":2850,"churned_subscriptions_from_start":289,"churn_rate_month_start":0.1014}
+{"price_window":"after","tenure_band":"under 6 months","join_group":"started Sep 2025","active_paid_subscriptions_at_start":949,"churned_subscriptions_from_start":37,"churn_rate_month_start":0.0390}
+{"price_window":"before","tenure_band":"12 to 24 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":7457,"churned_subscriptions_from_start":90,"churn_rate_month_start":0.0121}
+{"price_window":"before","tenure_band":"6 to 12 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":5226,"churned_subscriptions_from_start":178,"churn_rate_month_start":0.0341}
+{"price_window":"before","tenure_band":"over 24 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":7313,"churned_subscriptions_from_start":64,"churn_rate_month_start":0.0088}
+{"price_window":"before","tenure_band":"under 6 months","join_group":"other start before 2026-03-01","active_paid_subscriptions_at_start":5058,"churned_subscriptions_from_start":130,"churn_rate_month_start":0.0257}
+{"price_window":"before","tenure_band":"under 6 months","join_group":"started Sep 2025","active_paid_subscriptions_at_start":5464,"churned_subscriptions_from_start":215,"churn_rate_month_start":0.0393}

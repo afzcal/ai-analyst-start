@@ -1,0 +1,3 @@
+{"column_name":"subscriptions.start_date","min_value":"2022-01-12T00:00:00Z","max_value":"2026-09-24T23:05:58Z"}
+{"column_name":"subscriptions.end_date","min_value":"2022-03-07T00:00:00Z","max_value":"2026-09-24T00:00:00Z"}
+{"column_name":"payments.payment_date","min_value":"2022-01-12T00:00:00Z","max_value":"2026-09-24T23:51:30Z"}

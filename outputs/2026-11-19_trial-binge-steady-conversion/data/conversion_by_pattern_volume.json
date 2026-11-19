@@ -1,0 +1,12 @@
+{"volume_band":"1_bottom_quarter","pattern":"binge_then_quiet","trials":2,"converted":0,"min_week_minutes":81,"max_week_minutes":82,"avg_week_minutes":81.50,"avg_day0_minutes":76.00}
+{"volume_band":"1_bottom_quarter","pattern":"in_between","trials":114,"converted":10,"min_week_minutes":7,"max_week_minutes":84,"avg_week_minutes":43.18,"avg_day0_minutes":11.58}
+{"volume_band":"1_bottom_quarter","pattern":"light_then_quiet","trials":83,"converted":5,"min_week_minutes":0,"max_week_minutes":62,"avg_week_minutes":17.41,"avg_day0_minutes":9.75}
+{"volume_band":"1_bottom_quarter","pattern":"steady","trials":138,"converted":43,"min_week_minutes":20,"max_week_minutes":87,"avg_week_minutes":63.70,"avg_day0_minutes":15.84}
+{"volume_band":"2_second_quarter","pattern":"binge_then_quiet","trials":1,"converted":0,"min_week_minutes":114,"max_week_minutes":114,"avg_week_minutes":114.00,"avg_day0_minutes":101.00}
+{"volume_band":"2_second_quarter","pattern":"in_between","trials":19,"converted":0,"min_week_minutes":92,"max_week_minutes":172,"avg_week_minutes":123.95,"avg_day0_minutes":72.37}
+{"volume_band":"2_second_quarter","pattern":"light_then_quiet","trials":1,"converted":0,"min_week_minutes":88,"max_week_minutes":88,"avg_week_minutes":88.00,"avg_day0_minutes":47.00}
+{"volume_band":"2_second_quarter","pattern":"steady","trials":313,"converted":186,"min_week_minutes":88,"max_week_minutes":175,"avg_week_minutes":130.12,"avg_day0_minutes":33.79}
+{"volume_band":"3_third_quarter","pattern":"binge_then_quiet","trials":1,"converted":0,"min_week_minutes":187,"max_week_minutes":187,"avg_week_minutes":187.00,"avg_day0_minutes":186.00}
+{"volume_band":"3_third_quarter","pattern":"in_between","trials":1,"converted":0,"min_week_minutes":182,"max_week_minutes":182,"avg_week_minutes":182.00,"avg_day0_minutes":113.00}
+{"volume_band":"3_third_quarter","pattern":"steady","trials":338,"converted":271,"min_week_minutes":176,"max_week_minutes":289,"avg_week_minutes":228.45,"avg_day0_minutes":53.33}
+{"volume_band":"4_top_quarter","pattern":"steady","trials":338,"converted":313,"min_week_minutes":290,"max_week_minutes":1002,"avg_week_minutes":431.13,"avg_day0_minutes":88.69}

@@ -1,0 +1,13 @@
+pattern,trials,converted,population,conversion_pct,ci95_low_pct,ci95_high_pct,canceled,binge_minutes_threshold,avg_day0_minutes,avg_week_minutes,median_week_minutes,avg_active_days,label
+binge_then_quiet,17,0,all matured,0.0,0.0,18.432366037156456,,,,,,,Binge then quiet
+in_between,205,10,all matured,4.878048780487805,2.670908340599352,8.745207988714347,,,,,,,In between
+light_then_quiet,140,5,all matured,3.571428571428571,1.534948926721527,8.087858383541985,,,,,,,Light then quiet
+steady,1191,813,all matured,68.26196473551637,65.56334797715584,70.8431514282884,,,,,,,Steady
+binge_then_quiet,13,0,canceled before day 7,0.0,0.0,22.810184305529166,13.0,67.0,114.54,132.85,131.0,1.85,Binge then quiet
+in_between,71,0,canceled before day 7,0.0,0.0,5.132974174790491,71.0,67.0,39.72,74.9,51.0,2.82,In between
+light_then_quiet,56,0,canceled before day 7,0.0,0.0,6.419614448811528,56.0,67.0,15.88,22.68,16.5,1.27,Light then quiet
+steady,64,0,canceled before day 7,0.0,0.0,5.662602297115633,64.0,67.0,76.8,147.27,125.5,4.41,Steady
+binge_then_quiet,4,0,still in trial through day 6,0.0,0.0,48.990002040399915,4.0,67.0,109.75,116.0,98.0,2.0,Binge then quiet
+in_between,134,10,still in trial through day 6,7.462686567164178,4.103788178484625,13.192586791045619,124.0,67.0,20.96,55.67,47.5,2.83,In between
+light_then_quiet,84,5,still in trial through day 6,5.952380952380952,2.5690182263433017,13.188436100535988,79.0,67.0,10.19,18.25,13.0,1.19,Light then quiet
+steady,1127,813,still in trial through day 6,72.13842058562555,69.44911998332786,74.6773076259854,314.0,67.0,53.92,241.75,210.0,6.15,Steady

@@ -1,0 +1,17 @@
+{"volume_band":"1_bottom_quarter","day0_share_band":"0_no_first_week_use","trials":12,"converted":0,"min_week_minutes":0,"max_week_minutes":0,"avg_active_days":0}
+{"volume_band":"1_bottom_quarter","day0_share_band":"1_under_25pct","trials":183,"converted":33,"min_week_minutes":1,"max_week_minutes":87,"avg_active_days":3.30}
+{"volume_band":"1_bottom_quarter","day0_share_band":"2_25_to_50pct","trials":61,"converted":12,"min_week_minutes":12,"max_week_minutes":87,"avg_active_days":4.08}
+{"volume_band":"1_bottom_quarter","day0_share_band":"3_50_to_75pct","trials":43,"converted":10,"min_week_minutes":12,"max_week_minutes":83,"avg_active_days":3.53}
+{"volume_band":"1_bottom_quarter","day0_share_band":"4_75pct_or_more","trials":38,"converted":3,"min_week_minutes":2,"max_week_minutes":85,"avg_active_days":1.89}
+{"volume_band":"2_second_quarter","day0_share_band":"1_under_25pct","trials":186,"converted":136,"min_week_minutes":88,"max_week_minutes":175,"avg_active_days":5.81}
+{"volume_band":"2_second_quarter","day0_share_band":"2_25_to_50pct","trials":84,"converted":39,"min_week_minutes":88,"max_week_minutes":172,"avg_active_days":5.33}
+{"volume_band":"2_second_quarter","day0_share_band":"3_50_to_75pct","trials":49,"converted":11,"min_week_minutes":88,"max_week_minutes":175,"avg_active_days":4.84}
+{"volume_band":"2_second_quarter","day0_share_band":"4_75pct_or_more","trials":15,"converted":0,"min_week_minutes":92,"max_week_minutes":172,"avg_active_days":3.60}
+{"volume_band":"3_third_quarter","day0_share_band":"1_under_25pct","trials":222,"converted":207,"min_week_minutes":176,"max_week_minutes":289,"avg_active_days":6.78}
+{"volume_band":"3_third_quarter","day0_share_band":"2_25_to_50pct","trials":75,"converted":55,"min_week_minutes":176,"max_week_minutes":289,"avg_active_days":6.24}
+{"volume_band":"3_third_quarter","day0_share_band":"3_50_to_75pct","trials":35,"converted":9,"min_week_minutes":176,"max_week_minutes":281,"avg_active_days":5.37}
+{"volume_band":"3_third_quarter","day0_share_band":"4_75pct_or_more","trials":8,"converted":0,"min_week_minutes":180,"max_week_minutes":265,"avg_active_days":5.00}
+{"volume_band":"4_top_quarter","day0_share_band":"1_under_25pct","trials":247,"converted":245,"min_week_minutes":290,"max_week_minutes":1002,"avg_active_days":6.96}
+{"volume_band":"4_top_quarter","day0_share_band":"2_25_to_50pct","trials":72,"converted":63,"min_week_minutes":290,"max_week_minutes":806,"avg_active_days":6.74}
+{"volume_band":"4_top_quarter","day0_share_band":"3_50_to_75pct","trials":13,"converted":5,"min_week_minutes":293,"max_week_minutes":713,"avg_active_days":6.54}
+{"volume_band":"4_top_quarter","day0_share_band":"4_75pct_or_more","trials":6,"converted":0,"min_week_minutes":304,"max_week_minutes":684,"avg_active_days":5.50}
